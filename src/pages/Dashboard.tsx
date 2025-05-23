@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/ui/logo";
 import { LearningCard } from "@/components/dashboard/learning-card";
 import { ProgressChart } from "@/components/dashboard/progress-chart";
-import { Award, BookOpen, Calendar, Clock, Fire, LogOut, Bell, Search } from "lucide-react";
+import { Award, BookOpen, Calendar, Clock, Flame, LogOut, Bell, Search } from "lucide-react";
 
 // Sample data - in a real app this would come from API
 const SAMPLE_COURSES = [
@@ -128,7 +127,7 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Fire className="h-5 w-5 mr-2 text-orange-500" />
+                <Flame className="h-5 w-5 mr-2 text-orange-500" />
                 <span className="text-2xl font-bold">5 Days</span>
               </div>
             </CardContent>
