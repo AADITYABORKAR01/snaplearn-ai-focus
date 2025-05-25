@@ -1,12 +1,9 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { ArrowRight, BookOpen, Brain, Lightbulb, Mic, Award } from "lucide-react";
-
 const Index = () => {
-  return (
-    <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col">
       {/* Navigation */}
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
@@ -23,12 +20,12 @@ const Index = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="py-16 md:py-24 bg-gradient-to-br from-white to-snapgray-lightest">
+      <section className="py-16 md:py-24 bg-gradient-to-br from-white to-snapgray-lightest bg-stone-950">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center">
             <div className="md:w-1/2 mb-10 md:mb-0">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-                Your Progress <span className="text-snapblue">Simplified</span>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 leading-tight text-slate-50 lg:text-6xl">
+                Your Progress <span className="text-orange-500">Simplified</span>
               </h1>
               <p className="text-lg md:text-xl text-snapgray-dark mb-8 max-w-lg">
                 SnapLearn transforms your learning experience with AI-powered micro-lessons, 
@@ -51,11 +48,7 @@ const Index = () => {
             <div className="md:w-1/2 pl-0 md:pl-10">
               <div className="relative">
                 <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-gray-100 transform rotate-2">
-                  <img 
-                    src="https://placehold.co/600x400/3498db/FFFFFF?text=Video+Player+Demo" 
-                    alt="SnapLearn Interface" 
-                    className="w-full h-auto"
-                  />
+                  <img src="https://placehold.co/600x400/3498db/FFFFFF?text=Video+Player+Demo" alt="SnapLearn Interface" className="w-full h-auto" />
                 </div>
                 <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-lg shadow-lg border border-gray-100 transform -rotate-3">
                   <div className="text-sm font-medium text-snapblue">Notes</div>
@@ -71,7 +64,7 @@ const Index = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-gray-950">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">Learn Smarter, Not Harder</h2>
@@ -145,7 +138,7 @@ const Index = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-snapblue text-white">
+      <section className="py-16 text-white bg-orange-500">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform How You Learn?</h2>
           <p className="text-xl mb-8 max-w-2xl mx-auto">
@@ -207,8 +200,6 @@ const Index = () => {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
