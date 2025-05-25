@@ -168,9 +168,7 @@ export function NoteEditor({
           <div className="border-2 border-dashed border-muted rounded-lg p-6 h-full flex flex-col items-center justify-center text-center">
             <h3 className="font-medium mb-2">AI Summary</h3>
             <p className="text-muted-foreground mb-4"></p>
-            <Button disabled className="bg-gray-300">
-              Generate Summary (Coming Soon)
-            </Button>
+            
           </div>
         </TabsContent>
       </Tabs>
