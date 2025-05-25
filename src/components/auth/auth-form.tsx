@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
@@ -135,7 +134,7 @@ export function AuthForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-snapblue hover:bg-snapblue-dark">
+              <Button type="submit" className="w-full bg-orange hover:bg-orange-dark">
                 Login
               </Button>
             </form>
@@ -195,7 +194,7 @@ export function AuthForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-snapgreen hover:bg-snapgreen-dark">
+              <Button type="submit" className="w-full bg-orange hover:bg-orange-dark">
                 Create Account
               </Button>
             </form>
@@ -206,7 +205,7 @@ export function AuthForm() {
         <Button
           variant="link"
           onClick={toggleForm}
-          className="w-full text-snapblue hover:text-snapblue-dark"
+          className="w-full text-orange hover:text-orange-dark"
         >
           {isLogin ? "Don't have an account? Sign up" : "Already have an account? Log in"}
         </Button>
