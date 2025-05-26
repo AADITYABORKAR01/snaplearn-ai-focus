@@ -39,27 +39,6 @@ const Dashboard = () => {
     navigate('/');
   };
 
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) {
-      return `${minutes} min`;
-    }
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    return `${hours}h ${remainingMinutes}m`;
-  };
-
-  // Sample progress data for the chart
-  const progressData = [
-    { name: 'Mon', minutes: 30, progress: 60 },
-    { name: 'Tue', minutes: 45, progress: 90 },
-    { name: 'Wed', minutes: 0, progress: 0 },
-    { name: 'Thu', minutes: 60, progress: 120 },
-    { name: 'Fri', minutes: 25, progress: 50 },
-    { name: 'Sat', minutes: 0, progress: 0 },
-    { name: 'Sun', minutes: 40, progress: 80 },
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
@@ -149,10 +128,9 @@ const Dashboard = () => {
                       id={course.id}
                       title={course.title}
                       description={course.description || ''}
-                      thumbnailUrl={course.thumbnail_url}
                       progress={0}
-                      duration={formatDuration(course.duration || 0)}
-                      difficulty_level={course.difficulty_level}
+                      duration={`${Math.floor((course.duration || 0) / 60)} min`}
+                      difficulty={course.difficulty_level}
                       category={course.category || 'General'}
                     />
                   ))}
@@ -170,7 +148,7 @@ const Dashboard = () => {
                 <CardDescription>Your learning activity this week</CardDescription>
               </CardHeader>
               <CardContent>
-                <ProgressChart data={progressData} />
+                <ProgressChart />
               </CardContent>
             </Card>
 

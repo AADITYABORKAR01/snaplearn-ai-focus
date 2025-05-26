@@ -12,15 +12,7 @@ import Learn from "./pages/Learn";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
-// Create QueryClient outside of component to prevent recreation on every render
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
