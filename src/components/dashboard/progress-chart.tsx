@@ -10,7 +10,7 @@ interface ProgressChartProps {
   className?: string;
 }
 
-export function ProgressChart({ data, className }: ProgressChartProps) {
+export function ProgressChart({ data = [], className }: ProgressChartProps) {
   const chartData = data && data.length > 0 
     ? data 
     : [

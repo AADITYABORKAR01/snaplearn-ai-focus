@@ -13,7 +13,7 @@ interface LearningCardProps {
   thumbnailUrl?: string;
   progress: number;
   duration: string;
-  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  difficulty_level: 'beginner' | 'intermediate' | 'advanced';
   category: string;
   className?: string;
 }
@@ -25,7 +25,7 @@ export function LearningCard({
   thumbnailUrl,
   progress,
   duration,
-  difficulty,
+  difficulty_level,
   category,
   className,
 }: LearningCardProps) {
@@ -60,8 +60,8 @@ export function LearningCard({
             <Clock size={14} className="mr-1" />
             <span>{duration}</span>
           </div>
-          <span className={getDifficultyColor(difficulty)}>
-            {difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}
+          <span className={getDifficultyColor(difficulty_level)}>
+            {difficulty_level.charAt(0).toUpperCase() + difficulty_level.slice(1)}
           </span>
         </div>
         {progress > 0 && (
