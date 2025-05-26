@@ -39,6 +39,16 @@ const Dashboard = () => {
     navigate('/');
   };
 
+  const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) {
+      return `${minutes} min`;
+    }
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    return `${hours}h ${remainingMinutes}m`;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
@@ -128,8 +138,9 @@ const Dashboard = () => {
                       id={course.id}
                       title={course.title}
                       description={course.description || ''}
+                      thumbnailUrl={course.thumbnail_url}
                       progress={0}
-                      duration={`${Math.floor((course.duration || 0) / 60)} min`}
+                      duration={formatDuration(course.duration || 0)}
                       difficulty={course.difficulty_level}
                       category={course.category || 'General'}
                     />
