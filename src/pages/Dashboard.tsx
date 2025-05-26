@@ -39,6 +39,17 @@ const Dashboard = () => {
     navigate('/');
   };
 
+  // Sample progress data for the chart
+  const progressData = [
+    { name: 'Mon', minutes: 10, progress: 5 },
+    { name: 'Tue', minutes: 25, progress: 15 },
+    { name: 'Wed', minutes: 15, progress: 10 },
+    { name: 'Thu', minutes: 35, progress: 20 },
+    { name: 'Fri', minutes: 20, progress: 12 },
+    { name: 'Sat', minutes: 30, progress: 18 },
+    { name: 'Sun', minutes: 40, progress: 25 },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navigation */}
@@ -128,6 +139,7 @@ const Dashboard = () => {
                       id={course.id}
                       title={course.title}
                       description={course.description || ''}
+                      thumbnailUrl={course.thumbnail_url}
                       progress={0}
                       duration={`${Math.floor((course.duration || 0) / 60)} min`}
                       difficulty={course.difficulty_level}
@@ -142,15 +154,7 @@ const Dashboard = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Progress Chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Weekly Progress</CardTitle>
-                <CardDescription>Your learning activity this week</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ProgressChart />
-              </CardContent>
-            </Card>
+            <ProgressChart data={progressData} />
 
             {/* Achievements */}
             <Card>

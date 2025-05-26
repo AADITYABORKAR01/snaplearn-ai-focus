@@ -3,16 +3,18 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { PlayCircle, BookOpen, Award, Clock } from "lucide-react";
+import { PlayCircle, BookOpen, Clock } from "lucide-react";
 import { Link } from "react-router-dom";
 
 interface LearningCardProps {
   id: string;
   title: string;
   description: string;
-  thumbnailUrl: string;
+  thumbnailUrl?: string;
   progress: number;
   duration: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  category: string;
   className?: string;
 }
 
@@ -23,6 +25,8 @@ export function LearningCard({
   thumbnailUrl,
   progress,
   duration,
+  difficulty,
+  category,
   className,
 }: LearningCardProps) {
   return (
@@ -40,6 +44,14 @@ export function LearningCard({
         )}
       </div>
       <CardContent className="p-4">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+            {category}
+          </span>
+          <span className="text-xs text-muted-foreground capitalize">
+            {difficulty}
+          </span>
+        </div>
         <h3 className="font-semibold text-lg line-clamp-1">{title}</h3>
         <p className="text-sm text-muted-foreground mt-1 line-clamp-2">{description}</p>
         <div className="flex items-center mt-2 text-xs text-muted-foreground">
