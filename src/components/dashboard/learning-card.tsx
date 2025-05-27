@@ -55,12 +55,12 @@ export function LearningCard({
       </CardContent>
       <CardFooter className="p-4 pt-0 flex justify-between">
         <Link to={`/learn/${id}`}>
-          <Button variant="outline" size="sm" className="text-snapblue">
+          <Button variant="outline" size="sm" className="text-primary">
             <BookOpen size={16} className="mr-1" /> Continue
           </Button>
         </Link>
         <Link to={`/learn/${id}`}>
-          <Button size="sm" className="bg-snapblue hover:bg-snapblue-dark">
+          <Button size="sm" className="bg-primary hover:bg-primary/90">
             <PlayCircle size={16} className="mr-1" /> Play
           </Button>
         </Link>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -5,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/ui/logo";
 import { LearningCard } from "@/components/dashboard/learning-card";
 import { ProgressChart } from "@/components/dashboard/progress-chart";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Award, BookOpen, Calendar, Clock, Flame, LogOut, Bell, Search } from "lucide-react";
 
 // Sample data - in a real app this would come from API
@@ -55,33 +57,34 @@ const Dashboard = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <header className="bg-white border-b sticky top-0 z-10">
+      <header className="bg-card border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <Logo />
           
           <div className="flex-1 max-w-md mx-4 hidden md:block">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
               <input
                 type="text"
                 placeholder="Search for courses..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-snapblue focus:border-transparent"
+                className="w-full pl-10 pr-4 py-2 border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
               />
             </div>
           </div>
           
           <div className="flex items-center gap-4">
+            <ThemeToggle />
             <Button variant="ghost" size="icon" className="relative">
               <Bell size={20} />
               <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
             </Button>
             
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-snapblue-light flex items-center justify-center text-white font-medium">
+              <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium">
                 U
               </div>
               <span className="hidden md:inline font-medium">User</span>
@@ -98,13 +101,13 @@ const Dashboard = () => {
         {/* Mobile Search */}
         <div className="md:hidden border-t p-3">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
             <input
               type="text"
               placeholder="Search for courses..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-snapblue focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground"
             />
           </div>
         </div>
@@ -114,7 +117,7 @@ const Dashboard = () => {
         {/* Welcome Section */}
         <div className="mb-8">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Welcome back, User!</h1>
-          <p className="text-snapgray-dark">
+          <p className="text-muted-foreground">
             Continue your learning journey. You've been on a 5-day streak!
           </p>
         </div>
@@ -127,7 +130,7 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Flame className="h-5 w-5 mr-2 text-orange-500" />
+                <Flame className="h-5 w-5 mr-2 text-orange" />
                 <span className="text-2xl font-bold">5 Days</span>
               </div>
             </CardContent>
@@ -139,9 +142,9 @@ const Dashboard = () => {
             </CardHeader>
             <CardContent>
               <div className="flex items-center">
-                <Clock className="h-5 w-5 mr-2 text-snapblue" />
+                <Clock className="h-5 w-5 mr-2 text-primary" />
                 <span className="text-2xl font-bold">4.5 Hours</span>
-                <span className="ml-2 text-xs text-snapgreen">+15% this week</span>
+                <span className="ml-2 text-xs text-green-500">+15% this week</span>
               </div>
             </CardContent>
           </Card>
@@ -154,7 +157,7 @@ const Dashboard = () => {
               <div className="flex items-center">
                 <Award className="h-5 w-5 mr-2 text-yellow-500" />
                 <span className="text-2xl font-bold">12 Badges</span>
-                <span className="ml-2 text-xs text-snapblue">3 new</span>
+                <span className="ml-2 text-xs text-primary">3 new</span>
               </div>
             </CardContent>
           </Card>
@@ -169,7 +172,7 @@ const Dashboard = () => {
         <div className="mb-10">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold">Continue Learning</h2>
-            <Link to="#" className="text-snapblue hover:underline text-sm font-medium">
+            <Link to="#" className="text-primary hover:underline text-sm font-medium">
               View All
             </Link>
           </div>
@@ -185,7 +188,7 @@ const Dashboard = () => {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold">Recommended For You</h2>
-            <Link to="#" className="text-snapblue hover:underline text-sm font-medium">
+            <Link to="#" className="text-primary hover:underline text-sm font-medium">
               Explore More
             </Link>
           </div>
@@ -260,7 +263,7 @@ const Dashboard = () => {
         <div>
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold">Your Learning Schedule</h2>
-            <Button variant="outline" size="sm" className="text-snapblue border-snapblue">
+            <Button variant="outline" size="sm" className="text-primary border-primary">
               <Calendar size={16} className="mr-2" />
               View Calendar
             </Button>
@@ -269,20 +272,20 @@ const Dashboard = () => {
           <Card>
             <CardContent className="p-6">
               <div className="flex flex-col space-y-4">
-                <div className="flex items-center p-3 border-l-4 border-snapblue bg-blue-50 rounded">
-                  <div className="flex-shrink-0 mr-4 bg-white p-2 rounded shadow-sm">
-                    <Calendar size={24} className="text-snapblue" />
+                <div className="flex items-center p-3 border-l-4 border-primary bg-primary/10 rounded">
+                  <div className="flex-shrink-0 mr-4 bg-card p-2 rounded shadow-sm">
+                    <Calendar size={24} className="text-primary" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium">Web Development Basics</h3>
                     <p className="text-sm text-muted-foreground">Today, 3:00 PM - 4:30 PM</p>
                   </div>
-                  <Button size="sm" className="bg-snapblue hover:bg-snapblue-dark">Join</Button>
+                  <Button size="sm" className="bg-primary hover:bg-primary/90">Join</Button>
                 </div>
                 
-                <div className="flex items-center p-3 border-l-4 border-gray-300 rounded hover:bg-gray-50">
-                  <div className="flex-shrink-0 mr-4 bg-white p-2 rounded shadow-sm">
-                    <Calendar size={24} className="text-gray-400" />
+                <div className="flex items-center p-3 border-l-4 border-muted rounded hover:bg-muted/50">
+                  <div className="flex-shrink-0 mr-4 bg-card p-2 rounded shadow-sm">
+                    <Calendar size={24} className="text-muted-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium">Data Visualization Workshop</h3>
@@ -291,9 +294,9 @@ const Dashboard = () => {
                   <Button size="sm" variant="outline">Remind Me</Button>
                 </div>
                 
-                <div className="flex items-center p-3 border-l-4 border-gray-300 rounded hover:bg-gray-50">
-                  <div className="flex-shrink-0 mr-4 bg-white p-2 rounded shadow-sm">
-                    <Calendar size={24} className="text-gray-400" />
+                <div className="flex items-center p-3 border-l-4 border-muted rounded hover:bg-muted/50">
+                  <div className="flex-shrink-0 mr-4 bg-card p-2 rounded shadow-sm">
+                    <Calendar size={24} className="text-muted-foreground" />
                   </div>
                   <div className="flex-1">
                     <h3 className="font-medium">Machine Learning Practice Session</h3>
