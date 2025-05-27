@@ -1,34 +1,46 @@
 
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { AuthForm } from '@/components/auth/AuthForm';
-import { Logo } from '@/components/ui/logo';
-import { useAuth } from '@/hooks/useAuth';
+import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/ui/logo";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { AuthForm } from "@/components/auth/auth-form";
 
 const Auth = () => {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <Logo className="mx-auto" />
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Welcome to SnapLearn
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Learn anything, anytime with AI-powered education
-          </p>
+    <div className="min-h-screen flex flex-col bg-muted/50">
+      {/* Navigation */}
+      <header className="bg-background border-b">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <Link to="/">
+            <Logo />
+          </Link>
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Link to="/">
+              <Button variant="ghost">Back to Home</Button>
+            </Link>
+          </div>
         </div>
-        <AuthForm />
-      </div>
+      </header>
+
+      {/* Authentication Form */}
+      <main className="flex-1 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <AuthForm />
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-background border-t py-4">
+        <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
+          <p>© 2025 SnapLearn. All rights reserved.</p>
+          <div className="flex justify-center space-x-4 mt-2">
+            <a href="#" className="hover:text-orange">Privacy</a>
+            <a href="#" className="hover:text-orange">Terms</a>
+            <a href="#" className="hover:text-orange">Help</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

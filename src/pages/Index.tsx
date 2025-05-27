@@ -1,127 +1,213 @@
-
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Link } from "react-router-dom";
-import { Play, BookOpen, Zap, Users, ArrowRight } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
+import { ArrowRight, BookOpen, Brain, Lightbulb, Mic, Award } from "lucide-react";
 
 const Index = () => {
-  const { user } = useAuth();
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-orange-50">
+    <div className="min-h-screen flex flex-col">
       {/* Navigation */}
-      <nav className="container mx-auto px-4 py-6 flex justify-between items-center">
-        <Logo />
-        <div className="flex items-center gap-4">
-          <ThemeToggle />
-          {user ? (
-            <Link to="/dashboard">
-              <Button>Go to Dashboard</Button>
+      <header className="border-b">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <Logo />
+          <div className="flex items-center gap-4">
+            <ThemeToggle />
+            <Link to="/auth" className="text-orange hover:text-orange-dark font-medium">
+              Login
             </Link>
-          ) : (
             <Link to="/auth">
-              <Button>Get Started</Button>
+              <Button className="bg-orange hover:bg-orange-dark">Get Started</Button>
             </Link>
-          )}
+          </div>
         </div>
-      </nav>
+      </header>
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-snapblue to-orange bg-clip-text text-transparent">
-          Learn Anything,
-          <br />
-          Anytime with AI
-        </h1>
-        <p className="text-xl text-snapgray-dark mb-8 max-w-2xl mx-auto">
-          SnapLearn transforms any video into an interactive learning experience with AI-powered notes, 
-          real-time assistance, and gamified progress tracking.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          {user ? (
-            <Link to="/dashboard">
-              <Button size="lg" className="bg-snapblue hover:bg-snapblue-dark">
-                Continue Learning
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          ) : (
-            <Link to="/auth">
-              <Button size="lg" className="bg-snapblue hover:bg-snapblue-dark">
-                Start Learning Free
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          )}
-          <Button size="lg" variant="outline">
-            <Play className="mr-2 h-5 w-5" />
-            Watch Demo
-          </Button>
+      <section className="py-16 md:py-24 bg-gradient-to-br from-background to-muted">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row items-center">
+            <div className="md:w-1/2 mb-10 md:mb-0">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+                Your Progress <span className="text-orange">Simplified</span>
+              </h1>
+              <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-lg">
+                SnapLearn transforms your learning experience with AI-powered micro-lessons, 
+                smart notes, and personalized learning paths - all in a distraction-free environment.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link to="/auth">
+                  <Button size="lg" className="bg-orange hover:bg-orange-dark w-full sm:w-auto">
+                    Start Learning Now
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Button>
+                </Link>
+                <Link to="/auth">
+                  <Button size="lg" variant="outline" className="w-full sm:w-auto">
+                    See Demo
+                  </Button>
+                </Link>
+              </div>
+            </div>
+            <div className="md:w-1/2 pl-0 md:pl-10">
+              <div className="relative">
+                <div className="bg-card rounded-xl shadow-xl overflow-hidden border transform rotate-2">
+                  <img 
+                    src="https://placehold.co/600x400/FC6600/FFFFFF?text=Video+Player+Demo" 
+                    alt="SnapLearn Interface" 
+                    className="w-full h-auto"
+                  />
+                </div>
+                <div className="absolute -bottom-6 -left-6 bg-card p-4 rounded-lg shadow-lg border transform -rotate-3">
+                  <div className="text-sm font-medium text-orange">Notes</div>
+                  <div className="mt-1 text-xs text-muted-foreground">Automatically synced with your video</div>
+                </div>
+                <div className="absolute -top-6 -right-6 bg-orange text-white p-4 rounded-full shadow-lg transform rotate-12">
+                  <Award className="h-8 w-8" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-20">
-        <h2 className="text-3xl font-bold text-center mb-12">Why Choose SnapLearn?</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-            <div className="w-16 h-16 bg-snapblue-light rounded-full flex items-center justify-center mx-auto mb-4">
-              <Zap className="h-8 w-8 text-snapblue" />
-            </div>
-            <h3 className="text-xl font-semibold mb-2">AI-Powered Learning</h3>
-            <p className="text-snapgray-dark">
-              Get instant answers, summaries, and explanations powered by advanced AI technology.
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">Learn Smarter, Not Harder</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Our AI-powered platform makes learning efficient and enjoyable with these powerful features
             </p>
           </div>
           
-          <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-            <div className="w-16 h-16 bg-orange-light rounded-full flex items-center justify-center mx-auto mb-4">
-              <BookOpen className="h-8 w-8 text-orange" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-card p-6 rounded-xl border shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-12 h-12 bg-orange/10 rounded-lg flex items-center justify-center mb-4">
+                <BookOpen className="h-6 w-6 text-orange" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Distraction-Free Learning</h3>
+              <p className="text-muted-foreground">
+                Our clean interface eliminates distractions and keeps you focused on what matters: learning.
+              </p>
             </div>
-            <h3 className="text-xl font-semibold mb-2">Smart Note-Taking</h3>
-            <p className="text-snapgray-dark">
-              Automatic transcription and synchronized notes that follow your video progress.
-            </p>
-          </div>
-          
-          <div className="text-center p-6 bg-white rounded-lg shadow-sm">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users className="h-8 w-8 text-green-600" />
+            
+            <div className="bg-card p-6 rounded-xl border shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-12 h-12 bg-orange/10 rounded-lg flex items-center justify-center mb-4">
+                <Brain className="h-6 w-6 text-orange" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">AI-Powered Assistance</h3>
+              <p className="text-muted-foreground">
+                Get instant answers to your questions and AI-generated summaries of your learning materials.
+              </p>
             </div>
-            <h3 className="text-xl font-semibold mb-2">Gamified Progress</h3>
-            <p className="text-snapgray-dark">
-              Earn badges, maintain streaks, and track your learning journey with engaging rewards.
-            </p>
+            
+            <div className="bg-card p-6 rounded-xl border shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-12 h-12 bg-orange/10 rounded-lg flex items-center justify-center mb-4">
+                <Mic className="h-6 w-6 text-orange" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Smart Note-Taking</h3>
+              <p className="text-muted-foreground">
+                Dictate notes while watching videos, and our system automatically timestamps and organizes them.
+              </p>
+            </div>
+            
+            <div className="bg-card p-6 rounded-xl border shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-12 h-12 bg-orange/10 rounded-lg flex items-center justify-center mb-4">
+                <Lightbulb className="h-6 w-6 text-orange" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Micro-Learning "Snaps"</h3>
+              <p className="text-muted-foreground">
+                Break down complex topics into bite-sized, digestible segments that make learning efficient.
+              </p>
+            </div>
+            
+            <div className="bg-card p-6 rounded-xl border shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-12 h-12 bg-orange/10 rounded-lg flex items-center justify-center mb-4">
+                <Award className="h-6 w-6 text-orange" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Gamified Progress</h3>
+              <p className="text-muted-foreground">
+                Earn badges, track streaks, and visualize your learning progress to stay motivated.
+              </p>
+            </div>
+            
+            <div className="bg-card p-6 rounded-xl border shadow-md hover:shadow-lg transition-shadow">
+              <div className="w-12 h-12 bg-orange/10 rounded-lg flex items-center justify-center mb-4">
+                <ArrowRight className="h-6 w-6 text-orange" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2">Personalized Paths</h3>
+              <p className="text-muted-foreground">
+                Get custom-tailored learning recommendations based on your progress and goals.
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="container mx-auto px-4 py-20 text-center">
-        <div className="bg-white rounded-lg shadow-lg p-12">
-          <h2 className="text-3xl font-bold mb-4">Ready to Transform Your Learning?</h2>
-          <p className="text-xl text-snapgray-dark mb-8">
-            Join thousands of learners who are already using SnapLearn to accelerate their education.
+      {/* Call to Action */}
+      <section className="py-16 bg-orange text-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Transform How You Learn?</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+            Join thousands of students who are already learning smarter with SnapLearn.
           </p>
-          {user ? (
-            <Link to="/dashboard">
-              <Button size="lg" className="bg-orange hover:bg-orange-dark">
-                Go to Dashboard
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          ) : (
-            <Link to="/auth">
-              <Button size="lg" className="bg-orange hover:bg-orange-dark">
-                Get Started Today
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          )}
+          <Link to="/auth">
+            <Button size="lg" variant="secondary" className="bg-white text-orange hover:bg-gray-100">
+              Create Your Free Account
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+          </Link>
         </div>
       </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-darkest text-white py-12">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between">
+            <div className="mb-8 md:mb-0">
+              <Logo className="text-white" />
+              <p className="mt-4 max-w-xs text-gray-400">
+                Your progress simplified with AI-powered micro-learning.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Product</h3>
+                <ul className="space-y-2">
+                  <li><a href="#" className="text-gray-400 hover:text-white">Features</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white">Pricing</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white">Testimonials</a></li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Resources</h3>
+                <ul className="space-y-2">
+                  <li><a href="#" className="text-gray-400 hover:text-white">Help Center</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white">Blog</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white">Tutorials</a></li>
+                </ul>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold mb-4">Company</h3>
+                <ul className="space-y-2">
+                  <li><a href="#" className="text-gray-400 hover:text-white">About</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white">Careers</a></li>
+                  <li><a href="#" className="text-gray-400 hover:text-white">Contact</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-400">© 2025 SnapLearn. All rights reserved.</p>
+            <div className="flex space-x-4 mt-4 md:mt-0">
+              <a href="#" className="text-gray-400 hover:text-white">Privacy</a>
+              <a href="#" className="text-gray-400 hover:text-white">Terms</a>
+              <a href="#" className="text-gray-400 hover:text-white">Cookies</a>
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

@@ -12,7 +12,7 @@ interface ProgressChartProps {
 }
 
 export function ProgressChart({ data, className }: ProgressChartProps) {
-  const chartData = data && data.length > 0 
+  const chartData = data.length > 0 
     ? data 
     : [
         { name: 'Mon', minutes: 10, progress: 5 },
