@@ -71,13 +71,17 @@ export function AuthForm() {
 
   const onLoginSubmit = async (data: LoginFormValues) => {
     setIsLoading(true);
+    console.log("Attempting login with:", { email: data.email });
+    
     try {
-      const { error } = await signIn(data.email, data.password);
+      const result = await signIn(data.email, data.password);
+      console.log("Login result:", result);
       
-      if (error) {
+      if (result.error) {
+        console.error("Login error:", result.error);
         toast({
           title: "Login failed",
-          description: error.message,
+          description: result.error.message,
           variant: "destructive",
         });
         return;
@@ -90,6 +94,7 @@ export function AuthForm() {
       
       navigate("/dashboard");
     } catch (error: any) {
+      console.error("Login catch error:", error);
       toast({
         title: "Login failed",
         description: error.message || "An unexpected error occurred",
@@ -102,16 +107,24 @@ export function AuthForm() {
 
   const onRegisterSubmit = async (data: RegisterFormValues) => {
     setIsLoading(true);
+    console.log("Attempting registration with:", { 
+      email: data.email, 
+      username: data.username, 
+      fullName: data.fullName 
+    });
+    
     try {
-      const { error } = await signUp(data.email, data.password, {
+      const result = await signUp(data.email, data.password, {
         username: data.username,
         full_name: data.fullName,
       });
+      console.log("Registration result:", result);
       
-      if (error) {
+      if (result.error) {
+        console.error("Registration error:", result.error);
         toast({
           title: "Registration failed",
-          description: error.message,
+          description: result.error.message,
           variant: "destructive",
         });
         return;
@@ -119,11 +132,14 @@ export function AuthForm() {
 
       toast({
         title: "Registration successful",
-        description: "Please check your email to verify your account.",
+        description: "Please check your email to verify your account, or try logging in if email confirmation is disabled.",
       });
       
+      // Switch to login form after successful registration
       setIsLogin(true);
+      registerForm.reset();
     } catch (error: any) {
+      console.error("Registration catch error:", error);
       toast({
         title: "Registration failed",
         description: error.message || "An unexpected error occurred",
@@ -161,7 +177,11 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="your.email@example.com" {...field} />
+                      <Input 
+                        placeholder="your.email@example.com" 
+                        type="email"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -225,7 +245,11 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="your.email@example.com" {...field} />
+                      <Input 
+                        placeholder="your.email@example.com" 
+                        type="email"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
