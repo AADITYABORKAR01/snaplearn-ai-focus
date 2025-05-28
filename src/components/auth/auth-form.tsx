@@ -24,16 +24,18 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
 });
 
-const registerSchema = loginSchema.extend({
+const registerSchema = z.object({
   username: z.string().min(3, { message: "Username must be at least 3 characters" }),
   fullName: z.string().min(2, { message: "Full name must be at least 2 characters" }),
+  email: z.string().email({ message: "Please enter a valid email address" }),
+  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   confirmPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
@@ -211,7 +213,7 @@ export function AuthForm() {
           </Form>
         ) : (
           <Form {...registerForm}>
-            <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6">
+            <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
               <FormField
                 control={registerForm.control}
                 name="username"
@@ -219,7 +221,11 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input placeholder="johndoe" {...field} />
+                      <Input 
+                        placeholder="johndoe" 
+                        autoComplete="username"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -232,7 +238,11 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} />
+                      <Input 
+                        placeholder="John Doe" 
+                        autoComplete="name"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -248,6 +258,7 @@ export function AuthForm() {
                       <Input 
                         placeholder="your.email@example.com" 
                         type="email"
+                        autoComplete="email"
                         {...field} 
                       />
                     </FormControl>
@@ -262,7 +273,12 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
+                      <Input 
+                        type="password" 
+                        placeholder="••••••••" 
+                        autoComplete="new-password"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -275,7 +291,12 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input type="password" placeholder="••••••••" {...field} />
+                      <Input 
+                        type="password" 
+                        placeholder="••••••••" 
+                        autoComplete="new-password"
+                        {...field} 
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
