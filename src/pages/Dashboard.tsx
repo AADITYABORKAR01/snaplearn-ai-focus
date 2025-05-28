@@ -7,6 +7,7 @@ import { Logo } from "@/components/ui/logo";
 import { LearningCard } from "@/components/dashboard/learning-card";
 import { ProgressChart } from "@/components/dashboard/progress-chart";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { useAuth } from "@/contexts/AuthContext";
 import { Award, BookOpen, Calendar, Clock, Flame, LogOut, Bell, Search } from "lucide-react";
 
 // Sample data - in a real app this would come from API
@@ -49,12 +50,24 @@ const PROGRESS_DATA = [
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const { user, profile, signOut } = useAuth();
   
   // Filter courses based on search query
   const filteredCourses = SAMPLE_COURSES.filter(course => 
     course.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
     course.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  const displayName = profile?.full_name || profile?.username || user?.email?.split('@')[0] || 'User';
+  const userInitial = displayName.charAt(0).toUpperCase();
 
   return (
     <div className="min-h-screen bg-background">
@@ -85,16 +98,14 @@ const Dashboard = () => {
             
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-medium">
-                U
+                {userInitial}
               </div>
-              <span className="hidden md:inline font-medium">User</span>
+              <span className="hidden md:inline font-medium">{displayName}</span>
             </div>
             
-            <Link to="/">
-              <Button variant="ghost" size="icon">
-                <LogOut size={20} />
-              </Button>
-            </Link>
+            <Button variant="ghost" size="icon" onClick={handleSignOut}>
+              <LogOut size={20} />
+            </Button>
           </div>
         </div>
         
@@ -116,7 +127,7 @@ const Dashboard = () => {
       <main className="container mx-auto px-4 py-8">
         {/* Welcome Section */}
         <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-bold mb-2">Welcome back, User!</h1>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Welcome back, {displayName}!</h1>
           <p className="text-muted-foreground">
             Continue your learning journey. You've been on a 5-day streak!
           </p>

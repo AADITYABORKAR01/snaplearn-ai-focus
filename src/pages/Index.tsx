@@ -1,24 +1,46 @@
-import { Link } from "react-router-dom";
+
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/ui/logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { ArrowRight, BookOpen, Brain, Lightbulb, Mic, Award } from "lucide-react";
+import { Play, BookOpen, Users, Trophy, ArrowRight, Star, Zap, Target } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
+  const { user, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <header className="border-b">
+      <header className="bg-card border-b sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Logo />
+          
           <div className="flex items-center gap-4">
             <ThemeToggle />
-            <Link to="/auth" className="text-orange hover:text-orange-dark font-medium">
-              Login
-            </Link>
-            <Link to="/auth">
-              <Button className="bg-orange hover:bg-orange-dark">Get Started</Button>
-            </Link>
+            {user ? (
+              <Link to="/dashboard">
+                <Button className="bg-orange hover:bg-orange-dark">
+                  Go to Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <Link to="/auth">
+                <Button className="bg-orange hover:bg-orange-dark">
+                  Get Started
+                </Button>
+              </Link>
+            )}
           </div>
         </div>
       </header>

@@ -1,13 +1,14 @@
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useAuth } from "@/contexts/AuthContext";
 
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,6 +33,7 @@ const loginSchema = z.object({
 
 const registerSchema = loginSchema.extend({
   username: z.string().min(3, { message: "Username must be at least 3 characters" }),
+  fullName: z.string().min(2, { message: "Full name must be at least 2 characters" }),
   confirmPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
@@ -43,8 +45,10 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { signIn, signUp } = useAuth();
   
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -58,40 +62,82 @@ export function AuthForm() {
     resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
+      fullName: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  const onLoginSubmit = (data: LoginFormValues) => {
-    console.log("Login data:", data);
-    // In a real app, we would authenticate with a backend
-    toast({
-      title: "Login successful",
-      description: "Redirecting to your dashboard...",
-    });
-    
-    // Simulate a successful login
-    setTimeout(() => {
+  const onLoginSubmit = async (data: LoginFormValues) => {
+    setIsLoading(true);
+    try {
+      const { error } = await signIn(data.email, data.password);
+      
+      if (error) {
+        toast({
+          title: "Login failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Login successful",
+        description: "Welcome back!",
+      });
+      
       navigate("/dashboard");
-    }, 1500);
+    } catch (error: any) {
+      toast({
+        title: "Login failed",
+        description: error.message || "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const onRegisterSubmit = (data: RegisterFormValues) => {
-    console.log("Register data:", data);
-    // In a real app, we would create a user with a backend
-    toast({
-      title: "Registration successful",
-      description: "Your account has been created. Please log in.",
-    });
-    
-    // Switch to login form
-    setIsLogin(true);
+  const onRegisterSubmit = async (data: RegisterFormValues) => {
+    setIsLoading(true);
+    try {
+      const { error } = await signUp(data.email, data.password, {
+        username: data.username,
+        full_name: data.fullName,
+      });
+      
+      if (error) {
+        toast({
+          title: "Registration failed",
+          description: error.message,
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Registration successful",
+        description: "Please check your email to verify your account.",
+      });
+      
+      setIsLogin(true);
+    } catch (error: any) {
+      toast({
+        title: "Registration failed",
+        description: error.message || "An unexpected error occurred",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
+    loginForm.reset();
+    registerForm.reset();
   };
 
   return (
@@ -134,8 +180,12 @@ export function AuthForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-orange hover:bg-orange-dark">
-                Login
+              <Button 
+                type="submit" 
+                className="w-full bg-orange hover:bg-orange-dark"
+                disabled={isLoading}
+              >
+                {isLoading ? "Signing in..." : "Login"}
               </Button>
             </form>
           </Form>
@@ -150,6 +200,19 @@ export function AuthForm() {
                     <FormLabel>Username</FormLabel>
                     <FormControl>
                       <Input placeholder="johndoe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={registerForm.control}
+                name="fullName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John Doe" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -194,8 +257,12 @@ export function AuthForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-orange hover:bg-orange-dark">
-                Create Account
+              <Button 
+                type="submit" 
+                className="w-full bg-orange hover:bg-orange-dark"
+                disabled={isLoading}
+              >
+                {isLoading ? "Creating account..." : "Create Account"}
               </Button>
             </form>
           </Form>
@@ -206,6 +273,7 @@ export function AuthForm() {
           variant="link"
           onClick={toggleForm}
           className="w-full text-orange hover:text-orange-dark"
+          disabled={isLoading}
         >
           {isLogin ? "Don't have an account? Sign up" : "Already have an account? Log in"}
         </Button>
