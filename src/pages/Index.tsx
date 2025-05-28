@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Logo } from "@/components/ui/logo";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
-import { Play, BookOpen, Users, Trophy, ArrowRight, Star, Zap, Target } from "lucide-react";
+import { Play, BookOpen, Users, Trophy, ArrowRight, Star, Zap, Target, Award, Brain, Mic, Lightbulb } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 
