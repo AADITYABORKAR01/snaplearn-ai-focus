@@ -22,10 +22,7 @@ import { auth } from '../../firebaseConfig'; // Adjust path if needed (e.g., if 
 import {
   Form,
   FormControl,
-<<<<<<< HEAD
   FormDescription, // (Optional - if not used, can remove)
-=======
->>>>>>> 3e2f28fdd59e8e8aaa152c744101858bb6daa754
   FormField,
   FormItem,
   FormLabel,
@@ -41,7 +38,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 
 // Your existing Zod schemas [cite: 18, 19, 20]
 const loginSchema = z.object({
@@ -49,11 +46,8 @@ const loginSchema = z.object({
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
 });
 
-const registerSchema = z.object({
+const registerSchema = loginSchema.extend({
   username: z.string().min(3, { message: "Username must be at least 3 characters" }),
-  fullName: z.string().min(2, { message: "Full name must be at least 2 characters" }),
-  email: z.string().email({ message: "Please enter a valid email address" }),
-  password: z.string().min(6, { message: "Password must be at least 6 characters" }),
   confirmPassword: z.string().min(6, { message: "Password must be at least 6 characters" }),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
@@ -65,20 +59,14 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 export function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
-<<<<<<< HEAD
 
   // Firebase auth state and token state (kept for clarity, though redirection will make idToken display temporary)
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [idToken, setIdToken] = useState<string | null>(null);
 
   // Your existing react-hook-form setups [cite: 22, 23]
-=======
-  const { signIn, signUp } = useAuth();
-  
->>>>>>> 3e2f28fdd59e8e8aaa152c744101858bb6daa754
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -91,14 +79,12 @@ export function AuthForm() {
     resolver: zodResolver(registerSchema),
     defaultValues: {
       username: "",
-      fullName: "",
       email: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-<<<<<<< HEAD
   // Firebase Auth State Listener & Redirection (UPDATED)
   React.useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -209,93 +195,11 @@ export function AuthForm() {
         description: error.message,
         variant: "destructive",
       });
-=======
-  const onLoginSubmit = async (data: LoginFormValues) => {
-    setIsLoading(true);
-    console.log("Attempting login with:", { email: data.email });
-    
-    try {
-      const result = await signIn(data.email, data.password);
-      console.log("Login result:", result);
-      
-      if (result.error) {
-        console.error("Login error:", result.error);
-        toast({
-          title: "Login failed",
-          description: result.error.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: "Login successful",
-        description: "Welcome back!",
-      });
-      
-      navigate("/dashboard");
-    } catch (error: any) {
-      console.error("Login catch error:", error);
-      toast({
-        title: "Login failed",
-        description: error.message || "An unexpected error occurred",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const onRegisterSubmit = async (data: RegisterFormValues) => {
-    setIsLoading(true);
-    console.log("Attempting registration with:", { 
-      email: data.email, 
-      username: data.username, 
-      fullName: data.fullName 
-    });
-    
-    try {
-      const result = await signUp(data.email, data.password, {
-        username: data.username,
-        full_name: data.fullName,
-      });
-      console.log("Registration result:", result);
-      
-      if (result.error) {
-        console.error("Registration error:", result.error);
-        toast({
-          title: "Registration failed",
-          description: result.error.message,
-          variant: "destructive",
-        });
-        return;
-      }
-
-      toast({
-        title: "Registration successful",
-        description: "Please check your email to verify your account, or try logging in if email confirmation is disabled.",
-      });
-      
-      // Switch to login form after successful registration
-      setIsLogin(true);
-      registerForm.reset();
-    } catch (error: any) {
-      console.error("Registration catch error:", error);
-      toast({
-        title: "Registration failed",
-        description: error.message || "An unexpected error occurred",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
->>>>>>> 3e2f28fdd59e8e8aaa152c744101858bb6daa754
     }
   };
 
   const toggleForm = () => {
     setIsLogin(!isLogin);
-    loginForm.reset();
-    registerForm.reset();
   };
 
   return (
@@ -329,11 +233,7 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="your.email@example.com" 
-                        type="email"
-                        {...field} 
-                      />
+                      <Input placeholder="your.email@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -352,22 +252,14 @@ export function AuthForm() {
                   </FormItem>
                 )}
               />
-              <Button 
-                type="submit" 
-                className="w-full bg-orange hover:bg-orange-dark"
-                disabled={isLoading}
-              >
-                {isLoading ? "Signing in..." : "Login"}
+              <Button type="submit" className="w-full bg-snapblue hover:bg-snapblue-dark">
+                Login
               </Button>
             </form>
           </Form>
         ) : (
           <Form {...registerForm}>
-<<<<<<< HEAD
             <form onSubmit={registerForm.handleSubmit(handleSignUp)} className="space-y-6">
-=======
-            <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
->>>>>>> 3e2f28fdd59e8e8aaa152c744101858bb6daa754
               <FormField
                 control={registerForm.control}
                 name="username"
@@ -375,28 +267,7 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Username</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="johndoe" 
-                        autoComplete="username"
-                        {...field} 
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={registerForm.control}
-                name="fullName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Full Name</FormLabel>
-                    <FormControl>
-                      <Input 
-                        placeholder="John Doe" 
-                        autoComplete="name"
-                        {...field} 
-                      />
+                      <Input placeholder="johndoe" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -409,12 +280,7 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input 
-                        placeholder="your.email@example.com" 
-                        type="email"
-                        autoComplete="email"
-                        {...field} 
-                      />
+                      <Input placeholder="your.email@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -427,12 +293,7 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="password" 
-                        placeholder="••••••••" 
-                        autoComplete="new-password"
-                        {...field} 
-                      />
+                      <Input type="password" placeholder="••••••••" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -445,23 +306,14 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Confirm Password</FormLabel>
                     <FormControl>
-                      <Input 
-                        type="password" 
-                        placeholder="••••••••" 
-                        autoComplete="new-password"
-                        {...field} 
-                      />
+                      <Input type="password" placeholder="••••••••" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-              <Button 
-                type="submit" 
-                className="w-full bg-orange hover:bg-orange-dark"
-                disabled={isLoading}
-              >
-                {isLoading ? "Creating account..." : "Create Account"}
+              <Button type="submit" className="w-full bg-snapgreen hover:bg-snapgreen-dark">
+                Create Account
               </Button>
             </form>
           </Form>
@@ -471,17 +323,16 @@ export function AuthForm() {
         <Button
           variant="link"
           onClick={toggleForm}
-          className="w-full text-orange hover:text-orange-dark"
-          disabled={isLoading}
+          className="w-full text-snapblue hover:text-snapblue-dark"
         >
-          {isLogin
+        {isLogin
             ? "Don't have an account? Sign up"
             : "Already have an account? Log in"}
         </Button>
         {/* NEW: Google Sign-in Button - appears below the toggle link */}
         <Button
           onClick={handleGoogleSignIn}
-          className="w-full bg-red-500 hover:bg-red-600 text-white" // Example styling for Google button
+          className="w-full bg-green-500 hover:bg-green-600 text-white" // Example styling for Google button
         >
           Continue with Google
         </Button>

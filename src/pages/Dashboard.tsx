@@ -13,6 +13,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 // Firebase imports
 import { auth } from '../firebaseConfig'; // Adjust path if needed (e.g., if firebaseConfig.ts is in src/, it's '../firebaseConfig')
 import { signOut } from 'firebase/auth'; // NEW: Import signOut function
+// import { profile } from "console";
 
 // Sample data - in a real app this would come from API
 const SAMPLE_COURSES = [
@@ -76,15 +77,9 @@ const Dashboard = () => {
     course.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
-
-  const displayName = profile?.full_name || profile?.username || user?.email?.split('@')[0] || 'User';
+  // Get user profile and initial
+  const { user } = useAuth(); // Get user from AuthContext
+  const displayName = user?.full_name || user?.username || user?.email?.split('@')[0] || 'User';
   const userInitial = displayName.charAt(0).toUpperCase();
 
   return (
