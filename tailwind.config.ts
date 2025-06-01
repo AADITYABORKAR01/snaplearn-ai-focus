@@ -63,22 +63,18 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// SnapLearn custom colors
-				snapblue: {
-					light: '#4aa3df',
-					DEFAULT: '#3498db',
-					dark: '#2980b9',
+				// Updated SnapLearn brand colors - Orange theme
+				orange: {
+					light: '#ff8533',
+					DEFAULT: '#FC6600',
+					dark: '#cc5200',
 				},
-				snapgreen: {
-					light: '#40d47e',
-					DEFAULT: '#2ecc71',
-					dark: '#27ae60',
-				},
-				snapgray: {
-					lightest: '#f4f4f4',
-					light: '#cccccc',
-					DEFAULT: '#888888',
-					dark: '#333333',
+				gray: {
+					lightest: '#f8f9fa',
+					light: '#e9ecef',
+					DEFAULT: '#6c757d',
+					dark: '#343a40',
+					darkest: '#212529',
 				}
 			},
 			borderRadius: {

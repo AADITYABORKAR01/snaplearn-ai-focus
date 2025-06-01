@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/ui/logo";
 import { VideoPlayer } from "@/components/ui/video-player";
 import { NoteEditor } from "@/components/notes/note-editor";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, MessageCircle, List, Settings, MoreVertical } from "lucide-react";
 
@@ -142,16 +143,19 @@ const Learn = () => {
     console.log("Question for AI:", question);
   };
   if (!course) {
-    return <div className="min-h-screen flex flex-col items-center justify-center">
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-background">
         <h1 className="text-2xl font-bold mb-4">Course not found</h1>
         <Link to="/dashboard">
           <Button>Back to Dashboard</Button>
         </Link>
-      </div>;
+      </div>
+    );
   }
-  return <div className="min-h-screen flex flex-col bg-gray-50">
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
       {/* Navigation */}
-      <header className="bg-white border-b sticky top-0 z-10">
+      <header className="bg-card border-b sticky top-0 z-10">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
           <div className="flex items-center">
             <Link to="/dashboard">
@@ -163,6 +167,7 @@ const Learn = () => {
           </div>
           
           <div className="flex items-center gap-2">
+            <ThemeToggle />
             <Button variant="ghost" size="icon">
               <Settings size={20} />
             </Button>
@@ -179,7 +184,7 @@ const Learn = () => {
           <div className="max-w-5xl mx-auto">
             <div className="mb-6">
               <h1 className="text-2xl font-bold">{course.title}</h1>
-              <p className="text-snapgray-dark">{course.description}</p>
+              <p className="text-muted-foreground">{course.description}</p>
             </div>
             
             <div className="mb-6">
@@ -195,10 +200,10 @@ const Learn = () => {
               <h3 className="font-medium text-lg mb-4">Ask AI Assistant</h3>
               <div className="bg-muted/50 rounded-lg p-4 mb-4 min-h-[100px]">
                 <div className="flex items-start mb-4">
-                  <div className="bg-snapblue rounded-full p-2 text-white mr-3">
+                  <div className="bg-primary rounded-full p-2 text-primary-foreground mr-3">
                     <MessageCircle size={16} />
                   </div>
-                  <div className="bg-white rounded-lg p-3 shadow-sm">
+                  <div className="bg-card rounded-lg p-3 shadow-sm">
                     <p className="text-sm">
                       Welcome to the AI Assistant! I can answer questions about the content you're watching.
                       Try asking something like "Can you explain supervised learning?" or "What's the difference between HTML and CSS?"
@@ -207,8 +212,12 @@ const Learn = () => {
                 </div>
               </div>
               <div className="flex gap-2">
-                <input type="text" placeholder="Ask AI about this video..." className="flex-1 px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-snapblue focus:border-transparent" />
-                <Button className="bg-snapblue hover:bg-snapblue-dark">
+                <input 
+                  type="text" 
+                  placeholder="Ask AI about this video..." 
+                  className="flex-1 px-4 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent bg-background text-foreground" 
+                />
+                <Button className="bg-primary hover:bg-primary/90">
                   Ask
                 </Button>
               </div>
@@ -218,7 +227,7 @@ const Learn = () => {
         
         {/* Sidebar for course content */}
         <div className={`
-            bg-white border-l fixed right-0 top-[57px] bottom-0 w-full md:w-[300px] 
+            bg-card border-l fixed right-0 top-[57px] bottom-0 w-full md:w-[300px] 
             transform transition-transform duration-300 z-20
             ${showSidebar ? 'translate-x-0' : 'translate-x-full md:translate-x-full'}
           `}>
@@ -230,28 +239,41 @@ const Learn = () => {
           </div>
           
           <div className="p-4">
-            {course.sections.map((section, i) => <div key={i} className="mb-6">
+            {course.sections.map((section, i) => (
+              <div key={i} className="mb-6">
                 <h3 className="font-medium mb-2">{section.title}</h3>
                 <div className="space-y-2">
-                  {section.lessons.map(lesson => <div key={lesson.id} className="flex items-center p-2 rounded hover:bg-gray-100 cursor-pointer">
-                      <div className="mr-3 flex items-center justify-center w-6 h-6 rounded-full bg-snapblue-light text-white text-xs">
+                  {section.lessons.map(lesson => (
+                    <div key={lesson.id} className="flex items-center p-2 rounded hover:bg-muted cursor-pointer">
+                      <div className="mr-3 flex items-center justify-center w-6 h-6 rounded-full bg-primary/20 text-primary text-xs">
                         {lesson.id.split('-')[1]}
                       </div>
                       <div className="flex-1">
                         <p className="text-sm">{lesson.title}</p>
                         <p className="text-xs text-muted-foreground">{lesson.duration}</p>
                       </div>
-                    </div>)}
+                    </div>
+                  ))}
                 </div>
-              </div>)}
+              </div>
+            ))}
           </div>
         </div>
         
         {/* Toggle sidebar button for mobile/tablet */}
-        {!showSidebar && <Button variant="outline" size="icon" onClick={() => setShowSidebar(true)} className="fixed bottom-4 right-4 rounded-full shadow-lg">
+        {!showSidebar && (
+          <Button 
+            variant="outline" 
+            size="icon" 
+            onClick={() => setShowSidebar(true)} 
+            className="fixed bottom-4 right-4 rounded-full shadow-lg"
+          >
             <List size={20} />
-          </Button>}
+          </Button>
+        )}
       </main>
-    </div>;
+    </div>
+  );
 };
+
 export default Learn;
