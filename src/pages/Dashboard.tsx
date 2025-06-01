@@ -1,11 +1,15 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link,  useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Logo } from "@/components/ui/logo";
 import { LearningCard } from "@/components/dashboard/learning-card";
 import { ProgressChart } from "@/components/dashboard/progress-chart";
 import { Award, BookOpen, Calendar, Clock, Flame, LogOut, Bell, Search } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+// Firebase imports
+import { auth } from '../firebaseConfig'; // Adjust path if needed (e.g., if firebaseConfig.ts is in src/, it's '../firebaseConfig')
+import { signOut } from 'firebase/auth'; // NEW: Import signOut function
 
 // Sample data - in a real app this would come from API
 const SAMPLE_COURSES = [
@@ -47,6 +51,21 @@ const PROGRESS_DATA = [
 
 const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate(); // NEW: Initialize navigate hook
+
+  // NEW: Logout Function
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      console.log("User signed out from Dashboard.");
+      navigate("/auth"); // Redirect to the authentication page after logout
+      // Optional: Add a toast notification here if you use it in Dashboard.tsx
+      // (e.g., import { useToast } from "@/components/ui/use-toast"; and use toast({ ... }))
+    } catch (error) {
+      console.error("Error signing out:", error);
+      // Handle error gracefully (e.g., show an error message)
+    }
+  };
   
   // Filter courses based on search query
   const filteredCourses = SAMPLE_COURSES.filter(course => 
@@ -87,11 +106,17 @@ const Dashboard = () => {
               <span className="hidden md:inline font-medium">User</span>
             </div>
             
-            <Link to="/">
-              <Button variant="ghost" size="icon">
-                <LogOut size={20} />
-              </Button>
-            </Link>
+<Tooltip>
+  <TooltipTrigger asChild>
+    <Button variant="ghost" size="icon" onClick={handleSignOut}> {/* NEW: onClick handler */}
+      <LogOut size={20} /> {/* [cite: 115] */}
+      <span className="sr-only">Logout</span> {/* For accessibility */}
+    </Button>
+  </TooltipTrigger>
+  <TooltipContent>
+    <p>Logout</p> {/* NEW: Tooltip text */}
+  </TooltipContent>
+</Tooltip>
           </div>
         </div>
         

@@ -1,14 +1,27 @@
+// src/components/auth/auth-form.tsx - UPDATED FULL CODE
 
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+// Firebase imports - NEW AND EXISTING
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  User, // Import User type
+  GoogleAuthProvider, // NEW: For Google Sign-in
+  signInWithPopup,    // NEW: For Google Sign-in popup
+} from 'firebase/auth';
+import { auth } from '../../firebaseConfig'; // Adjust path if needed (e.g., if firebaseConfig.ts is in src/, then it's '../../firebaseConfig')
+
+// Shadcn UI components (ensure these paths are correct for your project)
 import {
   Form,
   FormControl,
-  FormDescription,
+  FormDescription, // (Optional - if not used, can remove)
   FormField,
   FormItem,
   FormLabel,
@@ -26,6 +39,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
+// Your existing Zod schemas [cite: 18, 19, 20]
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
@@ -46,7 +60,12 @@ export function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
-  
+
+  // Firebase auth state and token state (kept for clarity, though redirection will make idToken display temporary)
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [idToken, setIdToken] = useState<string | null>(null);
+
+  // Your existing react-hook-form setups [cite: 22, 23]
   const loginForm = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -54,7 +73,7 @@ export function AuthForm() {
       password: "",
     },
   });
-  
+
   const registerForm = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -65,30 +84,117 @@ export function AuthForm() {
     },
   });
 
-  const onLoginSubmit = (data: LoginFormValues) => {
-    console.log("Login data:", data);
-    // In a real app, we would authenticate with a backend
-    toast({
-      title: "Login successful",
-      description: "Redirecting to your dashboard...",
+  // Firebase Auth State Listener & Redirection (UPDATED)
+  React.useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setCurrentUser(user);
+      if (user) {
+        try {
+          const token = await user.getIdToken();
+          setIdToken(token); // Still set for console.log, but won't be displayed
+          console.log("-----------------------------------------");
+          console.log("YOUR FRESH FIREBASE ID TOKEN (Frontend):", token);
+          console.log("-----------------------------------------");
+          toast({
+            title: "Signed In",
+            description: `User: ${user.email}. Token logged in console.`,
+          });
+
+          // Redirect to dashboard after successful sign-in or sign-up
+          if (navigate && window.location.pathname !== '/dashboard') {
+            navigate("/dashboard");
+          }
+
+        } catch (error) {
+          console.error("Error getting ID token:", error);
+          toast({
+            title: "Error",
+            description: "Failed to get ID token.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        setIdToken(null);
+        console.log("User is signed out.");
+        toast({
+          title: "Signed Out",
+          description: "No user signed in.",
+        });
+      }
     });
-    
-    // Simulate a successful login
-    setTimeout(() => {
-      navigate("/dashboard");
-    }, 1500);
+
+    return () => unsubscribe();
+  }, [toast, navigate]);
+
+  // Firebase Email/Password Sign-in/Sign-up Functions (UPDATED to use form data)
+  const handleSignUp = async (data: RegisterFormValues) => {
+    try {
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
+      toast({
+        title: "Sign Up Success",
+        description: "User created and signed in!",
+      });
+      // onAuthStateChanged will handle redirection
+    } catch (error: any) {
+      console.error("Sign Up failed:", error.message);
+      toast({
+        title: "Sign Up Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
-  const onRegisterSubmit = (data: RegisterFormValues) => {
-    console.log("Register data:", data);
-    // In a real app, we would create a user with a backend
-    toast({
-      title: "Registration successful",
-      description: "Your account has been created. Please log in.",
-    });
-    
-    // Switch to login form
-    setIsLogin(true);
+  const handleSignIn = async (data: LoginFormValues) => {
+    try {
+      await signInWithEmailAndPassword(auth, data.email, data.password);
+      toast({
+        title: "Sign In Success",
+        description: "User signed in!",
+      });
+      // onAuthStateChanged will handle redirection
+    } catch (error: any) {
+      console.error("Sign In failed:", error.message);
+      toast({
+        title: "Sign In Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  // Firebase Sign Out Function (EXISTING)
+  const handleSignOut = async () => {
+    try {
+      await auth.signOut();
+      toast({
+        title: "Signed Out",
+        description: "User has been signed out.",
+      });
+    } catch (error: any) {
+      console.error("Sign Out failed:", error.message);
+      toast({
+        title: "Error",
+        description: "Failed to sign out.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  // NEW: Google Sign-in Function
+  const handleGoogleSignIn = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      // User is signed in, onAuthStateChanged useEffect will handle the rest (redirection, toast)
+    } catch (error: any) {
+      console.error("Google Sign In failed:", error.message);
+      toast({
+        title: "Google Sign In Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
   };
 
   const toggleForm = () => {
@@ -106,9 +212,19 @@ export function AuthForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {isLogin ? (
+        {/* Conditional rendering based on currentUser for sign-out or forms */}
+        {currentUser ? (
+          <div className="space-y-4 text-center">
+            <p className="text-xl font-semibold">Welcome, {currentUser.email}!</p>
+            {/* Removed the idToken display as per user's request for production behavior */}
+            <p className="text-sm text-muted-foreground">You are signed in. Redirecting to dashboard...</p>
+            <Button onClick={handleSignOut} className="w-full">
+              Sign Out
+            </Button>
+          </div>
+        ) : isLogin ? (
           <Form {...loginForm}>
-            <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-6">
+            <form onSubmit={loginForm.handleSubmit(handleSignIn)} className="space-y-6">
               <FormField
                 control={loginForm.control}
                 name="email"
@@ -142,7 +258,7 @@ export function AuthForm() {
           </Form>
         ) : (
           <Form {...registerForm}>
-            <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-6">
+            <form onSubmit={registerForm.handleSubmit(handleSignUp)} className="space-y-6">
               <FormField
                 control={registerForm.control}
                 name="username"
@@ -202,13 +318,22 @@ export function AuthForm() {
           </Form>
         )}
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex flex-col space-y-4"> {/* Adjusted for flex column to stack buttons */}
         <Button
           variant="link"
           onClick={toggleForm}
           className="w-full text-snapblue hover:text-snapblue-dark"
         >
-          {isLogin ? "Don't have an account? Sign up" : "Already have an account? Log in"}
+          {isLogin
+            ? "Don't have an account? Sign up"
+            : "Already have an account? Log in"}
+        </Button>
+        {/* NEW: Google Sign-in Button - appears below the toggle link */}
+        <Button
+          onClick={handleGoogleSignIn}
+          className="w-full bg-red-500 hover:bg-red-600 text-white" // Example styling for Google button
+        >
+          Continue with Google
         </Button>
       </CardFooter>
     </Card>
