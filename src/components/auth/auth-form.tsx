@@ -1,28 +1,26 @@
-// src/components/auth/auth-form.tsx - UPDATED FULL CODE
+// src/components/auth/auth-form.tsx
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@/contexts/AuthContext";
 
-// Firebase imports - NEW AND EXISTING
+import { useAuth } from "@/contexts/AuthContext"; 
+
+// Firebase imports
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  onAuthStateChanged,
-  User, // Import User type
-  GoogleAuthProvider, // NEW: For Google Sign-in
-  signInWithPopup,    // NEW: For Google Sign-in popup
+  GoogleAuthProvider,
+  signInWithPopup,
 } from 'firebase/auth';
-import { auth } from '../../firebaseConfig'; // Adjust path if needed (e.g., if firebaseConfig.ts is in src/, then it's '../../firebaseConfig')
+import { auth } from '../../firebaseConfig'; // Adjust path if needed
 
-// Shadcn UI components (ensure these paths are correct for your project)
+// Shadcn UI components
 import {
   Form,
   FormControl,
-  FormDescription, // (Optional - if not used, can remove)
   FormField,
   FormItem,
   FormLabel,
@@ -40,7 +38,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/use-toast";
 
-// Your existing Zod schemas [cite: 18, 19, 20]
 const loginSchema = z.object({
   email: z.string().email({ message: "Please enter a valid email address" }),
   password: z.string().min(6, { message: "Password must be at least 6 characters" }),
@@ -54,20 +51,15 @@ const registerSchema = loginSchema.extend({
   path: ["confirmPassword"],
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
-type RegisterFormValues = z.infer<typeof registerSchema>;
+type LoginFormData = z.infer<typeof loginSchema>;
+type RegisterFormData = z.infer<typeof registerSchema>;
 
 export function AuthForm() {
   const [isLogin, setIsLogin] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Firebase auth state and token state (kept for clarity, though redirection will make idToken display temporary)
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [idToken, setIdToken] = useState<string | null>(null);
-
-  // Your existing react-hook-form setups [cite: 22, 23]
-  const loginForm = useForm<LoginFormValues>({
+  const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
@@ -75,157 +67,89 @@ export function AuthForm() {
     },
   });
 
-  const registerForm = useForm<RegisterFormValues>({
+  const registerForm = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      username: "",
       email: "",
+      username: "",
       password: "",
       confirmPassword: "",
     },
   });
 
-  // Firebase Auth State Listener & Redirection (UPDATED)
-  React.useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user) {
-        try {
-          const token = await user.getIdToken();
-          setIdToken(token); // Still set for console.log, but won't be displayed
-          console.log("-----------------------------------------");
-          console.log("YOUR FRESH FIREBASE ID TOKEN (Frontend):", token);
-          console.log("-----------------------------------------");
-          toast({
-            title: "Signed In",
-            description: `User: ${user.email}. Token logged in console.`,
-          });
-
-          // Redirect to dashboard after successful sign-in or sign-up
-          if (navigate && window.location.pathname !== '/dashboard') {
-            navigate("/dashboard");
-          }
-
-        } catch (error) {
-          console.error("Error getting ID token:", error);
-          toast({
-            title: "Error",
-            description: "Failed to get ID token.",
-            variant: "destructive",
-          });
-        }
-      } else {
-        setIdToken(null);
-        console.log("User is signed out.");
-        toast({
-          title: "Signed Out",
-          description: "No user signed in.",
-        });
-      }
-    });
-
-    return () => unsubscribe();
-  }, [toast, navigate]);
-
-  // Firebase Email/Password Sign-in/Sign-up Functions (UPDATED to use form data)
-  const handleSignUp = async (data: RegisterFormValues) => {
-    try {
-      await createUserWithEmailAndPassword(auth, data.email, data.password);
-      toast({
-        title: "Sign Up Success",
-        description: "User created and signed in!",
-      });
-      // onAuthStateChanged will handle redirection
-    } catch (error: any) {
-      console.error("Sign Up failed:", error.message);
-      toast({
-        title: "Sign Up Failed",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
+  const toggleForm = () => {
+    setIsLogin(!isLogin);
+    loginForm.reset();
+    registerForm.reset();
   };
 
-  const handleSignIn = async (data: LoginFormValues) => {
+  const handleSignIn = async (data: LoginFormData) => {
     try {
       await signInWithEmailAndPassword(auth, data.email, data.password);
       toast({
-        title: "Sign In Success",
-        description: "User signed in!",
+        title: "Success!",
+        description: "You have successfully logged in.",
       });
-      // onAuthStateChanged will handle redirection
+      navigate('/dashboard');
     } catch (error: any) {
-      console.error("Sign In failed:", error.message);
+      console.error("Login error:", error);
       toast({
-        title: "Sign In Failed",
-        description: error.message,
+        title: "Login Failed",
+        description: error.message || "An unexpected error occurred.",
         variant: "destructive",
       });
     }
   };
 
-  // Firebase Sign Out Function (EXISTING)
-  const handleSignOut = async () => {
+  const handleSignUp = async (data: RegisterFormData) => {
     try {
-      await auth.signOut();
+      await createUserWithEmailAndPassword(auth, data.email, data.password);
       toast({
-        title: "Signed Out",
-        description: "User has been signed out.",
+        title: "Account Created!",
+        description: "You have successfully signed up. Please log in.",
       });
+      setIsLogin(true); // Switch to login form after registration
     } catch (error: any) {
-      console.error("Sign Out failed:", error.message);
+      console.error("Signup error:", error);
       toast({
-        title: "Error",
-        description: "Failed to sign out.",
+        title: "Registration Failed",
+        description: error.message || "An unexpected error occurred.",
         variant: "destructive",
       });
     }
   };
 
-  // NEW: Google Sign-in Function
   const handleGoogleSignIn = async () => {
     try {
       const provider = new GoogleAuthProvider();
       await signInWithPopup(auth, provider);
-      // User is signed in, onAuthStateChanged useEffect will handle the rest (redirection, toast)
-    } catch (error: any) {
-      console.error("Google Sign In failed:", error.message);
       toast({
-        title: "Google Sign In Failed",
-        description: error.message,
+        title: "Success!",
+        description: "You have successfully signed in with Google.",
+      });
+      navigate('/dashboard');
+    } catch (error: any) {
+      console.error("Google sign-in error:", error);
+      toast({
+        title: "Google Sign-In Failed",
+        description: error.message || "An unexpected error occurred.",
         variant: "destructive",
       });
     }
   };
 
-  const toggleForm = () => {
-    setIsLogin(!isLogin);
-  };
-
   return (
-    <Card className="w-full max-w-md mx-auto shadow-lg animate-fade-in">
+    <Card>
       <CardHeader>
-        <CardTitle>{isLogin ? "Login" : "Create an Account"}</CardTitle>
+        <CardTitle>{isLogin ? "Welcome Back!" : "Join SnapLearn"}</CardTitle>
         <CardDescription>
-          {isLogin
-            ? "Enter your credentials to access your account"
-            : "Fill in your details to create a new account"}
+          {isLogin ? "Log in to your account to continue your learning journey." : "Create an account to start learning today!"}
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* Conditional rendering based on currentUser for sign-out or forms */}
-        {currentUser ? (
-          <div className="space-y-4 text-center">
-            <p className="text-xl font-semibold">Welcome, {currentUser.email}!</p>
-            {/* Removed the idToken display as per user's request for production behavior */}
-            <p className="text-sm text-muted-foreground">You are signed in. Redirecting to dashboard...</p>
-            <Button onClick={handleSignOut} className="w-full">
-              Sign Out
-            </Button>
-          </div>
-        ) : isLogin ? (
+        {isLogin ? (
           <Form {...loginForm}>
-            <form onSubmit={loginForm.handleSubmit(handleSignIn)} className="space-y-6">
+            <form onSubmit={loginForm.handleSubmit(handleSignIn)} className="space-y-4">
               <FormField
                 control={loginForm.control}
                 name="email"
@@ -233,7 +157,7 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="your.email@example.com" {...field} />
+                      <Input placeholder="you@example.com" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -252,27 +176,17 @@ export function AuthForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-snapblue hover:bg-snapblue-dark">
-                Login
+              <Button 
+                type="submit" 
+                className="w-full bg-snapgreen hover:bg-snapgreen-dark text-foreground" // ADDED: text-foreground
+              >
+                Log In
               </Button>
             </form>
           </Form>
         ) : (
           <Form {...registerForm}>
-            <form onSubmit={registerForm.handleSubmit(handleSignUp)} className="space-y-6">
-              <FormField
-                control={registerForm.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="johndoe" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <form onSubmit={registerForm.handleSubmit(handleSignUp)} className="space-y-4">
               <FormField
                 control={registerForm.control}
                 name="email"
@@ -280,7 +194,20 @@ export function AuthForm() {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input placeholder="your.email@example.com" {...field} />
+                      <Input placeholder="you@example.com" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={registerForm.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input placeholder="yourusername" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -312,29 +239,38 @@ export function AuthForm() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full bg-snapgreen hover:bg-snapgreen-dark">
+              <Button 
+                type="submit" 
+                className="w-full bg-snapgreen hover:bg-snapgreen-dark text-foreground" // ADDED: text-foreground
+              >
                 Create Account
               </Button>
             </form>
           </Form>
         )}
       </CardContent>
-      <CardFooter className="flex flex-col space-y-4"> {/* Adjusted for flex column to stack buttons */}
+      <CardFooter className="flex flex-col space-y-4"> 
         <Button
           variant="link"
           onClick={toggleForm}
           className="w-full text-snapblue hover:text-snapblue-dark"
         >
-        {isLogin
-            ? "Don't have an account? Sign up"
-            : "Already have an account? Log in"}
+          {isLogin ? "Don't have an account? Sign up" : "Already have an account? Log in"}
         </Button>
-        {/* NEW: Google Sign-in Button - appears below the toggle link */}
+        {/* Google Sign-in Button - now matches the image's style and text */}
         <Button
           onClick={handleGoogleSignIn}
-          className="w-full bg-green-500 hover:bg-green-600 text-white" // Example styling for Google button
+          className="w-full border border-input bg-background hover:bg-accent hover:text-accent-foreground"
+          variant="outline"
         >
-          Continue with Google
+          {/* Google SVG Icon (small, inline, black/dark) */}
+          <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12.24 10.27v3.09h6.12c-.25 1.58-.98 2.65-2.07 3.53-.41.36-.88.66-1.38.92l2.42 2.42c1.47-1.36 2.64-3.5 3.16-6.19H22V10.27h-9.76z" fill="#4285F4"/>
+            <path d="M12.24 22c2.81 0 5.48-.92 7.31-2.5l-2.42-2.42c-1.12.98-2.58 1.5-4.89 1.5-4.48 0-8.2-3.08-9.58-7.23H.99c1.44 3.73 5.09 6.43 11.25 6.43z" fill="#34A853"/>
+            <path d="M2.66 14.88c-.28-.84-.44-1.74-.44-2.73s.16-1.89.44-2.73l-2.66-2.06c-.46 1.05-.72 2.22-.72 3.82s.26 2.77.72 3.82L2.66 14.88z" fill="#FBBC05"/>
+            <path d="M12.24 4.5c2.31 0 4.14.93 5.07 1.83l2.2-2.2C17.72 2.37 15.05 1 12.24 1c-6.16 0-9.81 2.7-11.25 6.43L2.66 9.59c1.38-4.15 5.1-7.23 9.58-7.23z" fill="#EA4335"/>
+          </svg>
+          Sign in with Google
         </Button>
       </CardFooter>
     </Card>
